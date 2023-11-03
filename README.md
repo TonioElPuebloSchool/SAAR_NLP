@@ -1,176 +1,104 @@
-<img style="float: left; padding-right: 10px; width: 200px" src="https://upload.wikimedia.org/wikipedia/fr/b/b1/Logo_EPF.png?raw=true"> 
+<img style="float: left; padding-right: 10px; width: 250px" src="https://upload.wikimedia.org/wikipedia/fr/b/b1/Logo_EPF.png?raw=true" > 
 
-## Web programming
-**P2024** MMMDE4IN19-22-antoine-courbi
+![TensorFlow](https://img.shields.io/badge/TensorFlow-%23FF6F00.svg?style=for-the-badge&logo=TensorFlow&logoColor=white) 
 
-# Developping a web application
+![Jupyter Notebook](https://img.shields.io/badge/jupyter-%23FA0F00.svg?style=for-the-badge&logo=jupyter&logoColor=white)
 
-### Created by Antoine Courbi
+## **Natural Language Processing: Sentiment Analysis**
+10-11/2023 - Created by Antoine Courbi
+
 -----
-### [*Moodle course*](https://moodle.epf.fr/course/view.php?id=8942&sectionid=51831#section-2)
-### [*Github depository*](https://github.com/EPF-MDE/MMMDE4IN19-22-antoine-courbi)
+#### [*Course instructions*](https://github.com/RPegoud/nlp_courses/blob/main/nlp_courses/tp_4_5_NLP_project/instructions.md)
+#### [*Github depository*](https://github.com/TonioElPuebloSchool/SAAR_NLP)
 -----
 
-This **README** is meant to explain **how to run** the application and what **features** are implemented.
+This **README** is meant to explain how the project was carried out. It is divided into the following sections:
+
+- [**Introduction**](#introduction)
+- [**Dataset**](#dataset)
+- [**Requirements**](#requirements)
+- [**Results**](#results)
+- [**Conclusion**](#conclusion)
+- [**References**](#references)
+
+# **Introduction**
+
+**Sentiment analysis** is a common task in **Natural Language Processing**. It consists in classifying a sentence into one of several `categories`, depending on the `sentiment` it expresses.  
+Since it's a hard task to do **manually**, it's a good candidate for **automation**.  Moreover, it can be used in many applications, such as chatbots, product reviews, tweets, etc.  
+
+This project is meant to **investigate** different methods to perform sentiment analysis, using different `models` and `techniques`.  Great models already exist, such as [`BERT`](https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270), so this project is not meant to create a new incredible model, but rather to explore the different **possibilities** and to compare them.
+
+# **Dataset**
+
+The dataset used for this project is the [**`Emotions dataset for NLP`**](https://www.kaggle.com/datasets/praveengovi/emotions-dataset-for-nlp/code) from kaggle.  
+It provides three files :
+- `train.txt` : 16000 sentences with their corresponding labels
+- `test.txt` : 2000 sentences with their corresponding labels
+- `val.txt` : 2000 sentences with their corresponding labels
+  
+The labels and theire distributions on the training set are the following:
+- `joy`         33.5%
+- `sadness`     29.2%
+- `anger`       13.5%
+- `fear`        12.1%
+- `love`         8.1%
+- `surprise`     3.6%
 
 # **Requirements**
-The following requirements are needed to run the application:
+
+In order to use the **models**, you can download the ***requirements.txt*** file and install the required packages using `anaconda` by running the following command in your terminal:
 ```bash
-npm install
-npm install express-basic-auth
-npm install method-override
-npm install method-override body-parser
+$ conda create --name <env> --file <requirements.txt>
 ```
-Now `npm run dev` can be used **in the epfbook folder** to run the application properly, after which the application can be accessed at http://localhost:3000/.
-The auhtentification is done with the following credentials:
+That will create a new **environment** with the required packages. You can then activate the environment by running the following command:
 ```bash
-username,password
-eric-burel,1234admin
-acourbi,newpassword
-admin,admin
-```
-There is no other kind of auhtentification, so the user can access the application with any of the credentials above.
-
-# **Overview**
-
-The application is a simple `web application` that allows the user to see a **list of students** and their details. The user can also `update` the details of a student, `add` a student or `delete` a student. The user can also access the `data` of the students by `downloading` a csv file. There is also a `search bar` that allows the user to search for a student by name, and a `chart` page that displays a chart on the *covid-19-students-delhi.csv* file.
-
-# **Architecture**
-
-The application is composed of the following files in `epfbook` folder:
-- app.js
-- package.json
-- package-lock.json
-- students.csv
-- users.csv
-- users_uncrypted.csv
-- **views folder**
-    - home.html
-    - create-student.ejs
-    - search_results.ejs
-    - student_details.ejs
-    - student_unknown.ejs
-    - student_unknown.ejs
-    - students-data.ejs
-    - students.ejs
-- **public folder**
-    - covid-19-students-delhi.csv
-    - style.css
-    - style_chart.css
-    - students.js
-
-# **Features**
-# Exercise 0: Consume an existing API
-
-If we want to retrieve the character whose id is 5, we can follow the documentation where we can see the following :
-```bash
-You can get a single character by adding the id as a parameter: /character/
-GET https://rickandmortyapi.com/api/character/2 
-```
-Hence when following the url for character with id=5 we get :
-```bash
-{"id":5,"name":"Jerry Smith","status":"Alive","species":"Human", ...
+$ conda activate <env>
 ```
 
-# Exercise 1: A page per student
+# **Results**
 
-In order to have a different page for **each student**, we need to add a route for each student. We can do this by adding the following code in the app.js file:
-```bash
-app.get('/students/:id', (req, res)
-```
-We also need to create a `student_details.ejs` file in the `views` folder. This file will be used to display the details of a student.
+The following table shows the results obtained with the different models.
 
-If a student is not found, we can redirect the user to a `student_unknown.ejs` file. This file will display a message saying that the student is not found as follows:
-```html
-<h1>Student Not Found</h1>
-      <p>The requested student does not exist.</p>
-```
+| **Model**                                      | **Training Time** | **Accuracy**   |
+|--------------------------------------------|---------------|------------|
+| Baseline Model                             | 2.1s          | 70%        |
+| Baseline Model with Balancer               | 5.1s          | 84%        |
+| Logistic Regression                        | 2s            | 87%        |
+| Logistic Regression with Balancer          | 5.6s          | 88%        |
+| Decision Tree Classifier                   | 1mn03s        | 86%        |
+| Support Vector Classifier (SVC)            | 5mn45s        | 86%        |
+| Random Forest Classifier                   | 7mn10s        | 87%        |
+| **LR with Balancer and Hyperparameter Tuning** | **31.5s** | **90%** |
+| Manual RNN                                 | 6mn14         | 81%        |
 
 
-# Exercise 2: Update a student
+# **Conclusion**
 
-Still in the `student_details.ejs` file, we can add a form to update the student. This form will be sent to the server with a **POST request**. The server will then update the student in the `students.csv` file. The following code is used to update the student:
-```bash
-fs.createReadStream('students.csv')
-    .pipe(csv.parse({ headers: true }))
-    .on('data', (data) => {
-      students.push(data);
-    })
-    .on('end', () => {
-      students[studentId] = updatedStudent;
+The best model is the **`Logistic Regression`** with **Balancer** and **Hyperparameter Tuning**, obtaining an **accuracy** of **90%**.  
 
-      // Write the updated students array back to the CSV file
-      const ws = fs.createWriteStream('students.csv');
-      csv.write(students, { headers: true })
-        .pipe(ws)
-        .on('finish', () => {
-          console.log(`Updated student with ID: ${studentId}`);
-          res.redirect(`/students/${studentId}`);
-        });
-    });
-```
-As you can see after the update is done, we redirect the user to the `student_details` page, which will refresh the page and display the updated student.
+The **`manual RNN`** could be improvded by using a **bidirectional** RNN, and by using a **pretrained** embedding layer, because its currently using a one-hot encoding, which is not optimal.  
 
-# Exercice 3: Delete a student
+Also, the **dataset** could be **augmented** by using **synonyms** and **antonyms** of the words in the sentences, which would increase the **variety** of the dataset.
 
-In order to **delete** a student, we need to add a button in the `student_details.ejs` file. This button will send a **POST request** to the server. The server will then **delete** the student from the `students.csv` file. After the deletion is completed, the user is redirected to the students page. 
+# **References**
+Articles:
+- [BERT Explained: State of the art language model for NLP](https://towardsdatascience.com/bert-explained-state-of-the-art-language-model-for-nlp-f8b21a9b6270)
+- [Sentiment Analysis: A Practitioner’s Guide to NLP](https://monkeylearn.com/sentiment-analysis/)
+- [Contextualized Affect Representations for Emotion Recognition](https://aclanthology.org/D18-1404/)
+- [Practical Text Classification With Python and Keras](https://realpython.com/python-keras-text-classification/)
 
-To make sure no student is deleted by mistake, we can add a **confirmation message** before the deletion is done. This is done by adding the following code in the `student_details.ejs` file:
-```bash
-function confirmDelete() {
-          if (confirm("Are you sure you want to delete this student?")) {
-            window.location.href = "/students/<%= studentId %>/delete";
-          }
-        }
-```
-This function is called when the user clicks on the delete button. If the user confirms the deletion, the function redirects the user to the delete route. 
+Notebooks:
+- [BERTweet](https://github.com/VinAIResearch/BERTweet)
+- [Emotions detection from tweets](https://www.kaggle.com/code/takai380/emotion-detection-from-tweets-roberta-fine-8eda50/notebook)
 
-# Exercice 4: Search for a student
-
-In the `students.ejs` file, we can add a **search bar**. If the user types a name in the **search bar**, the students page will be refreshed and only the students whose name contains the string typed by the user will be displayed. It also works for the student's school. 
-
-To do so we need to create a new page for the results of the search, displaying the students found as **clickable links**, redirecting towards the `student_details` page. 
-
-# Exercice 5: Download the list of students
-
-We can also add a route to **download** the list of students in a csv file. This is done by adding the following code in the app.js file, in the `app.get('/students/:id', (req, res)` route:
-```bash
-if (req.params.id === 'download') {
-    // adding the route to download the data
-    console.log("downloading file");
-    res.download('./students.csv');
-    return;
-  }
-```
-
-# Exercice 6: Adding a chart page
-
-We can use the **chart** page created in the previous TP. We just need to add a route to access this page. This is done by adding the following code in the `app.js` file:
-```bash
-app.get("/students/data", (req, res) => {
-  res.render("students-data");
-});
-```
-
-# Exercice 7: Adding a menu
-To finalize the application, we can add a **menu** to navigate between the different pages. We use the same menu for all of the pages, added at the top of the page as follows:
-```html
-<nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/students/data">Chart</a></li>
-        <li><a href="/students">Students</a></li>
-        <li><a href="/students/create">Create a Student</a></li>
-        <li><a href="/students/download">Download CSV</a></li>
-    </ul>
-</nav>
-```
-# Exercice 8: Work on the design
-
-We can work on the design of the application by modifying the `style.css` file. We can add a background color, change the color of the links, change the font, etc. We use a differente css file for the chart page, `style_chart.css`, to change the design of the chart, because we don't want the same design for the chart and the rest of the application.
-
-Thank you for reading this README. I hope you enjoyed it. If you have any remarks or questions, feel free to contact me on [LinkedIn](https://www.linkedin.com/in/antoine-courbi/).
+Github:
+- [RNN pour l'analyse de sentiments](https://github.com/aminaghoul/sentiment-analysis/)
+- [Bentrevett sentiment analysis](https://github.com/bentrevett/pytorch-sentiment-analysis/)
+- 
+Other:
+- [Hugging Face](https://huggingface.co/)
+- [Markdown badges](https://github.com/Ileriayo/markdown-badges)
 
 <p align="center">&mdash; ⭐️ &mdash;</p>
-<p align="center"><i>This README was created during the Web Programming course</i></p>
+<p align="center"><i>This README was created during the NLP course</i></p>
 <p align="center"><i>Created by Antoine Courbi</i></p>
