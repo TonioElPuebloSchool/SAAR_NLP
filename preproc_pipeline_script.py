@@ -1,3 +1,8 @@
+"""
+Explanations concerning the choices made in the preprocessing pipeline -
+are provided in the 2_preprocessing_pipeline_notebook.ipynb file.
+"""
+
 import pandas as pd
 import re
 from nltk.corpus import stopwords
@@ -9,7 +14,13 @@ stop_words = set(stopwords.words("english"))
 
 def lower_case(text: str) -> str:
     """
-    Converts the input text to lowercase.
+    _summary_
+
+    Args:
+        text (str): text to lower case
+
+    Returns:
+        str: text lower cased
     """
     return text.lower()
 def remove_stop_words(text: str) -> str:
@@ -85,10 +96,10 @@ def preprocessing_pipeline(text: str) -> str:
         ('lemmatization', FunctionTransformer(lemmatization))
     ]
 
-    # Create the pipeline
+    # now we can create the pipeline
     preprocessing_pipeline = Pipeline(preprocessing_steps)
 
-    # Apply the pipeline to the input text
+    # and finally, we apply the pipeline to the input text
     cleaned_text = preprocessing_pipeline.transform([text][0])
 
     return cleaned_text
