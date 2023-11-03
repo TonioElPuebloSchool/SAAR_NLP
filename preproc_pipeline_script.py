@@ -1,67 +1,91 @@
 import pandas as pd
 import re
-import string
-import nltk
-from spellchecker import SpellChecker
-from nltk.corpus import stopwords, wordnet
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from sklearn.preprocessing import FunctionTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import FunctionTransformer
 
-# Load NLTK resources
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('stopwords')
-nltk.download('wordnet')
+stop_words = set(stopwords.words("english"))
 
-# Define preprocessing functions
-def remove_urls(text):
-    return re.sub(r'https?://\S+|www\.\S+', '', text)
-
-def remove_http_tags(text):
-    return re.sub('<.*?>+', '', text)
-
-def spell_correction(text):
-    spell = SpellChecker()
-    words = text.split()
-    corrected_words = [spell.correction(word) if word in spell.unknown(words) else word for word in words]
-    return ' '.join(corrected_words)
-
-def lower_case(text):
+def lower_case(text: str) -> str:
+    """
+    Converts the input text to lowercase.
+    """
     return text.lower()
+def remove_stop_words(text: str) -> str:
+    """_summary_
 
-def remove_punctuation(text):
-    return re.sub('[%s]' % re.escape(string.punctuation), '', text)
+    Args:
+        text (str): text to remove stop words from
 
-def remove_stopwords(text, language='english'):
-    stopwords_set = set(stopwords.words(language))
-    words = text.split()
-    filtered_words = [word for word in words if word not in stopwords_set]
-    return ' '.join(filtered_words)
+    Returns:
+        str: text with stop words removed
+    """
+    Text=[i for i in str(text).split() if i not in stop_words]
+    return " ".join(Text)
+def remove_numbers(text: str) -> str:
+    """_summary_
 
-def lemmatize(text):
-    lemmatizer = WordNetLemmatizer()
-    wordnet_map = {'N': wordnet.NOUN, 'V': wordnet.VERB, 'R': wordnet.ADV, 'J': wordnet.ADJ}
-    pos_tagged_text = nltk.pos_tag(nltk.word_tokenize(text))
-    lemmatized_words = [lemmatizer.lemmatize(word, wordnet_map.get(pos[0], wordnet.NOUN)) for word, pos in pos_tagged_text]
-    return ' '.join(lemmatized_words)
+    Args:
+        text (_type_): text to remove numbers from
 
-# pipeline
+    Returns:
+        _type_: text with numbers removed
+    """
+    text=''.join([i for i in text if not i.isdigit()])
+    return text
+def remove_punctuations(text: str) -> str:
+    """_summary_
+    
+    Args:
+        text (_type_): text to remove punctuations from
+        
+    Returns:
+        _type_: text with punctuations removed
+    """
+    text = re.sub('[%s]' % re.escape("""!"#$%&'()*+,،-./:;<=>؟?@[\]^_`{|}~"""), ' ', text)
+    text = text.replace('؛',"", )
+    text = re.sub('\s+', ' ', text)
+    text =  " ".join(text.split())
+    return text.strip()
+def remove_urls(text: str) -> str:
+    """_summary_
+    
+    Args:
+        text (_type_): text to remove urls from
+        
+    Returns:
+        _type_: text with urls removed
+    """
+    url_pattern = re.compile(r'https?://\S+|www\.\S+')
+    return url_pattern.sub(r'', text)
+def lemmatization(text: str) -> str:
+    """_summary_
+
+    Args:
+        text (str): text to lemmatize
+
+    Returns:
+        str: text with lemmatized words
+    """
+    lemmatizer= WordNetLemmatizer()
+    text = text.split()
+    text=[lemmatizer.lemmatize(y) for y in text]
+    return " " .join(text)
 def preprocessing_pipeline(text: str) -> str:
     """
     Chains all the cleaning functions together using scikit-learn pipelines.
     """
-    # Create the preprocessing pipeline
     preprocessing_steps = [
         ('lower_case', FunctionTransformer(lower_case)),
+        ('remove_stopwords', FunctionTransformer(remove_stop_words)),
+        ('remove_numbers', FunctionTransformer(remove_numbers)),
+        ('remove_punctuation', FunctionTransformer(remove_punctuations)),
         ('remove_urls', FunctionTransformer(remove_urls)),
-        ('remove_http_tags', FunctionTransformer(remove_http_tags)),
-        ('remove_punctuation', FunctionTransformer(remove_punctuation)),
-        ('remove_stopwords', FunctionTransformer(lambda x: remove_stopwords(x, 'english'))),
-        #('lemmatize', FunctionTransformer(lemmatize)),
-        #('spell_correction', FunctionTransformer(spell_correction))
+        ('lemmatization', FunctionTransformer(lemmatization))
     ]
 
+    # Create the pipeline
     preprocessing_pipeline = Pipeline(preprocessing_steps)
 
     # Apply the pipeline to the input text
@@ -69,9 +93,6 @@ def preprocessing_pipeline(text: str) -> str:
 
     return cleaned_text
 
-# Example usage
 if __name__ == "__main__":
-    df = pd.read_csv("data/clean_data/Musical_instruments_reviews_clean.csv", index_col=0)
-    df["cleaned_text"] = preprocessing_pipeline.transform(df['text'])
-    # Save the preprocessed DataFrame to a new CSV file if needed
-    df.to_csv("data/clean_data/Musical_instruments_reviews_preprocessed.csv")
+    df = pd.read_csv("data\clean_data\dataset.csv", index_col=0)
+    df["text"] = df.text.apply(lambda x: preprocessing_pipeline(x))
